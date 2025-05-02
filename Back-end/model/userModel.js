@@ -18,7 +18,7 @@ const userSchema =  mongoose.Schema({
   },
   language: {
     type: String,
-    default: "English", // Multi-lingual support
+    default: "English", 
   },
   createdAt: {
     type: Date,
@@ -26,6 +26,7 @@ const userSchema =  mongoose.Schema({
   },
 });
 
-const UserModel = mongoose.model("User", userSchema);
+UserModel = mongoose.model("User", userSchema);
 
-module.exports={UserModel};
+module.exports= {UserModel}
+

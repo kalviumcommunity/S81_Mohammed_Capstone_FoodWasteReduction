@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const grocerySchema = new mongoose.Schema({
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -28,8 +30,8 @@ const grocerySchema = new mongoose.Schema({
     },
   });
   
-  const GroceryModel = mongoose.model("grocery", grocerySchema);
-  
+  GroceryModel = mongoose.model("grocery", grocerySchema);
+  module.exports= GroceryModel
 
 
-  module.exports={GroceryModel}
+   
