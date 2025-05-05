@@ -39,24 +39,6 @@ groceryRouter.get('/:userId', async (req, res) => {
 });
 
 
-// const calculateExpiry = require('../utils/calculateExpiry');
-
-// router.post('/add', async (req, res) => {
-//   const { userId, itemName, quantity, purchaseDate } = req.body;
-
-//   const expiryDate = calculateExpiry(itemName, purchaseDate);
-
-//   const grocery = new Grocery({
-//     userId,
-//     itemName,
-//     quantity,
-//     purchaseDate,
-//     expiryDate,
-//   });
-
-//   await grocery.save();
-//   res.status(201).json({ message: 'Grocery item added with expiry', grocery });
-// });
 
 
  module.exports = groceryRouter;

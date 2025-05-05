@@ -7,9 +7,9 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const userRouter = express.Router();
 require("dotenv").config();
 
-userRouter.get("/signup", (req, res) => {
-  res.status(200).send("Signup Page");
-});
+// userRouter.get("/signup", (req, res) => {
+//   res.status(200).send("Signup Page");
+// });
 
 userRouter.post("/signup",
   catchAsyncError(async (req, res, next) => {
@@ -23,10 +23,7 @@ userRouter.post("/signup",
       return next(new Errorhandler("Invalid email format", 400));
     }
 
-    // if (!password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/)) {
-    //   return next(new Errorhandler("Password must be at least 8 characters long", 400));
-    // }
-
+  
     const userExists = await UserModel.findOne({ email });
     if (userExists) {
       return next(new Errorhandler("User already exists", 400));

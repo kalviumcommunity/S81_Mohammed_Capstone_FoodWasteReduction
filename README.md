@@ -40,7 +40,7 @@ Get a birds-eye view of your pantry health:
 * Recent additions
 * Waste statistics (weekly/monthly)
 
-### 🤝 **Community Sharing** *(Coming Soon)*
+### 🤝 **Community Sharing** *(In Future)*
 
 Help your neighbors and reduce waste! Share near-expiry or excess food items with others nearby through the in-app network.
 
