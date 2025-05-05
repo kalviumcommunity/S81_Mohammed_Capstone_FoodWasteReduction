@@ -21,13 +21,14 @@ function Home() {
         console.error('Failed to fetch groceries:', err);
       }
     };
+    
 
     fetchData();
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-10">
-      <h1 className="text-3xl font-bold text-green-700 mb-6">Your Groceries</h1>
+      <h1 className="text-3xl font-bold text-black-700 mb-6">Your Groceries</h1>
       <div className="grid gap-4">
         {groceries.map((item) => (
           <div

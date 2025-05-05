@@ -106,9 +106,13 @@ function Login(props) {
               <input type="checkbox" id="remember" className="mr-2" />
               <label htmlFor="remember" className="text-gray-600">Remember me</label>
             </div>
-            <a href="#" className="text-green-600 hover:underline text-sm">
-              Forgot password?
-            </a>
+            <span
+  onClick={() => navigate("/forgot-password")}
+  className="text-green-600 hover:underline text-sm cursor-pointer"
+>
+  Forgot password?
+</span>
+
           </div>
 
           <button

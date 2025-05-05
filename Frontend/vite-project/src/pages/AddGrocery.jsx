@@ -82,7 +82,7 @@ function AddGrocery() {
         
         <button
           type="submit"
-          className="w-full bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-200"
+          className="w-full bg--600 text-black px-4 py-2 rounded-md hover:bg-white-700 transition duration-200"
           disabled={loading}
         >
           {loading ? 'Adding...' : 'Add Item'}

@@ -1,68 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
-const availableGroceries = [
-  "Milk",
-  "Bread",
-  "Apple",
-  "Banana",
-  "Potato",
-  "Tomato",
-  "Rice",
-  "Eggs",
-  "Butter",
-  "Cheese",
-];
+const items = ["Apple", "Banana", "Bread", "Milk", "Potato", "Rice", "Tomato"];
 
-function SearchBox({ onItemAdd }) {
-  const [search, setSearch] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+function GroceryFilter({ onSelect }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredItems, setFilteredItems] = useState(items);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearch(value);
+  const token = Cookies.get('accesstoken');  // Assuming the token is stored in cookies.
 
-    // Filter available groceries based on search
-    if (value.length > 0) {
-      setSuggestions(
-        availableGroceries.filter((item) =>
-          item.toLowerCase().includes(value.toLowerCase())
-        )
-      );
+  useEffect(() => {
+    if (searchTerm === '') {
+      setFilteredItems(items);
     } else {
-      setSuggestions([]);
+      const filtered = items.filter(item =>
+        item.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredItems(filtered);
+    }
+  }, [searchTerm]);
+
+  const handleSelect = (e) => {
+    const value = e.target.value;
+    if (value) onSelect(value);
+  };
+
+  const fetchItems = async () => {
+    if (!token) {
+      console.log("Token not found, please log in.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/groceries', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setFilteredItems(data.items || []);
+      } else {
+        console.error('Failed to fetch groceries');
+      }
+    } catch (err) {
+      console.error('Error fetching groceries:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleItemSelect = (item) => {
-    onItemAdd(item); // Pass the selected item to the parent component
-    setSearch(""); // Clear the search box after selection
-    setSuggestions([]); // Clear the suggestions
-  };
+  useEffect(() => {
+    fetchItems(); // Fetch items when the component mounts (optional, depending on your app's flow).
+  }, [token]);
 
   return (
-    <div>
+    <div className="mb-4">
       <input
         type="text"
-        value={search}
-        onChange={handleSearchChange}
-        placeholder="Search for groceries..."
-        className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 mb-2"
+        placeholder="Search grocery item..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="block w-full p-2 mb-2 border border-gray-300 rounded-md"
       />
-      {suggestions.length > 0 && (
-        <ul className="bg-white border rounded-md max-h-60 overflow-y-auto">
-          {suggestions.map((item) => (
-            <li
-              key={item}
-              className="p-2 cursor-pointer hover:bg-gray-200"
-              onClick={() => handleItemSelect(item)}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
+
+      {loading ? (
+        <div className="text-center">Loading...</div>
+      ) : (
+        <select
+          onChange={handleSelect}
+          className="block w-full p-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select Item</option>
+          {filteredItems.length > 0 ? (
+            filteredItems.map(item => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))
+          ) : (
+            <option disabled>No items found</option>
+          )}
+        </select>
       )}
     </div>
   );
 }
 
-export default SearchBox;
+export default GroceryFilter;
