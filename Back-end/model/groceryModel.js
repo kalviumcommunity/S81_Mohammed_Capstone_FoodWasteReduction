@@ -30,8 +30,12 @@ const grocerySchema = new mongoose.Schema({
     },
   });
   
+
+  
   GroceryModel = mongoose.model("grocery", grocerySchema);
   module.exports= GroceryModel
+
+
 
 
    
