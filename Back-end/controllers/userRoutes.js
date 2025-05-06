@@ -7,9 +7,9 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const userRouter = express.Router();
 require("dotenv").config();
 
-// userRouter.get("/signup", (req, res) => {
-//   res.status(200).send("Signup Page");
-// });
+userRouter.get("/signup", (req, res) => {
+  res.status(200).send("Signup Page");
+});
 
 userRouter.post("/signup",
   catchAsyncError(async (req, res, next) => {

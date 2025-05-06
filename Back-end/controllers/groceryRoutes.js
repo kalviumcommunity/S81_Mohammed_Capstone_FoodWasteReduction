@@ -2,7 +2,6 @@ const express = require('express');
 const groceryRouter = express.Router();
 const GroceryModel = require('../model/groceryModel');
 const { estimateExpiry, getStorageTip } = require('../utils/expiryHelper');
-// const calculateExpiry = require('../utils/calculateExpiry');
 
 // Add a grocery item
 groceryRouter.post('/add', async (req, res) => {
