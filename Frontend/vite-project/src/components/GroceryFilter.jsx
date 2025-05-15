@@ -89,6 +89,7 @@ function GroceryFilter({ onSelect }) {
         </select>
       )}
     </div>
+    
   );
 }
 
