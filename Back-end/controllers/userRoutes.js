@@ -95,29 +95,29 @@ res.status(200).json({ success: true, message: "Login successful", token });
 // );
 
 // PUT /user/forgot-password
-userRouter.put("/forgot-password", async (req, res) => {
+  userRouter.put("/forgot-password", async (req, res) => {
 
-const { email, newPassword } = req.body;
-try {
-if (!email || !newPassword) {
-return res.status(400).json({ message: "Missing fields" });
-}
-const user = await UserModel.findOne({ email });
-if (!user) {
-return res.status(404).json({ message: "User not found" });
-}
-const hashedPassword = await bcrypt.hash(newPassword, 10);
-user.password = hashedPassword;
-await user.save();
-
-
-res.json({ message: "Password reset successful." });
+  const { email, newPassword } = req.body;
+  try {
+  if (!email || !newPassword) {
+  return res.status(400).json({ message: "Missing fields" });
+  }
+  const user = await UserModel.findOne({ email });
+  if (!user) {
+  return res.status(404).json({ message: "User not found" });
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+  await user.save();
 
 
-} catch (err) {
-console.error("Forgot password error:", err);
-res.status(500).json({ message: "Server error" });
-}
-});
+  res.json({ message: "Password reset successful." });
+
+
+  } catch (err) {
+  console.error("Forgot password error:", err);
+  res.status(500).json({ message: "Server error" });
+  }
+  });
 module.exports=userRouter
 
