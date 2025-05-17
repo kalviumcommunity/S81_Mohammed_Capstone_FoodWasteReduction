@@ -29,7 +29,7 @@ const { app } = require("./app");
 require("dotenv").config();
 const connection = require("./db/connections");
 
-const userRouter = require('./controllers/userRoutes');
+// const userRouter = require('./controllers/userRoutes');
 
 // Start server
 const port = process.env.PORT || 2806;

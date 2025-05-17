@@ -11,16 +11,14 @@ groceryRouter.post('/add', async (req, res) => {
     const estimatedExpiry = estimateExpiry(itemName, purchaseDate);
     const storageTip = getStorageTip(itemName);
 
-    const item = new Grocery({
-      userId,
-      itemName,
+    const item = new GroceryModel({
+      user: userId,
+      name: itemName,
       quantity,
       purchaseDate,
-      estimatedExpiry,
-      storageTip,
+      expiryDate: estimatedExpiry,
+      storageTips: storageTip,
     });
-
-
 
     await item.save();
     res.status(201).json(item);
@@ -30,16 +28,44 @@ groceryRouter.post('/add', async (req, res) => {
 });
 
 // Get grocery items for a user
-groceryRouter.get('/:userId', async (req, res) => {
+groceryRouter.get('/user/:userId', async (req, res) => {
   try {
-    const items = await Grocery.find({ userId: req.params.userId });
+    const items = await GroceryModel.find({ user: req.params.userId });
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching groceries', error: err.message });
   }
 });
 
+// Update grocery item by ID
+groceryRouter.put('/update/:id', async (req, res) => {
+  try {
+    const { itemName, quantity, purchaseDate } = req.body;
+    const updated = await GroceryModel.findByIdAndUpdate(
+      req.params.id,
+      { name: itemName, quantity, purchaseDate },
+      { new: true }
+    );
 
+    if (!updated) return res.status(404).json({ error: 'Item not found' });
 
+    res.status(200).json({ message: 'Item updated successfully', grocery: updated });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update grocery item' });
+  }
+});
 
- module.exports = groceryRouter;
+// Delete grocery item by ID
+groceryRouter.delete('/delete/:id', async (req, res) => {
+  try {
+    const deleted = await GroceryModel.findByIdAndDelete(req.params.id);
+
+    if (!deleted) return res.status(404).json({ error: 'Item not found' });
+
+    res.status(200).json({ message: 'Item deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete grocery item' });
+  }
+});
+
+module.exports = groceryRouter;
