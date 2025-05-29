@@ -1,0 +1,28 @@
+meta {
+  name: Grocery
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:2806/grocery/add
+  body: json
+  auth: inherit
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    "user": "6836d612e61ee4c0aaf4be82", 
+    "name": "Tomatoes",
+    "quantity": 3,
+    "purchaseDate": "2025-05-28"
+  }
+  
+  
+  
+  
+}

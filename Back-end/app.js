@@ -16,6 +16,8 @@ const userRouter = require('./controllers/userRoutes');
 const groceryRouter = require("./controllers/groceryRoutes");
 const profileRouter = require("./controllers/profileRoutes");
 
+// const GroceryModel = require('../model/groceryModel'); 
+
 app.get("/test", async (req, res) => {
   res.send("hello.....");
 });

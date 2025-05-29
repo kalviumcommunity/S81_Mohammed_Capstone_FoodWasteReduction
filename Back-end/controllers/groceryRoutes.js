@@ -6,19 +6,19 @@ const { estimateExpiry, getStorageTip } = require('../utils/expiryHelper');
 
 // Add a grocery item
 groceryRouter.post('/add', async (req, res) => {
-  const { userId, itemName, quantity, purchaseDate } = req.body;
+  const { user, name, quantity, purchaseDate } = req.body;
 
   try {
-    const estimatedExpiry = estimateExpiry(itemName, purchaseDate);
-    const storageTip = getStorageTip(itemName);
+    const estimatedExpiry = estimateExpiry(name, purchaseDate);
+    const storageTip = getStorageTip(name);
 
-    const item = new Grocery({
-      userId,
-      itemName,
+    const item = new GroceryModel({
+      user: user,
+      name: name,
       quantity,
       purchaseDate,
-      estimatedExpiry,
-      storageTip,
+      expiryDate: estimatedExpiry,
+      storageTips: storageTip,
     });
 
     await item.save();
@@ -37,8 +37,5 @@ groceryRouter.get('/:userId', async (req, res) => {
     res.status(500).json({ message: 'Error fetching groceries', error: err.message });
   }
 });
-
-
-
 
  module.exports = groceryRouter;

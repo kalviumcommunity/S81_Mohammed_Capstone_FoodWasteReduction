@@ -1,4 +1,4 @@
-function estimateExpiry(itemName, purchaseDate) {
+function estimateExpiry(name, purchaseDate) {
     const days = {
       // Vegetables
       // Leafy Greens
@@ -106,11 +106,11 @@ function estimateExpiry(itemName, purchaseDate) {
     };
   
     const date = new Date(purchaseDate);
-    date.setDate(date.getDate() + (days[itemName] || 7)); // Default to 7 days if not found
+    date.setDate(date.getDate() + (days[name] || 7)); // Default to 7 days if not found
     return date;
   }
   
-  function getStorageTip(itemName) {
+  function getStorageTip(name) {
     const tips = {
       "Milk": "Store in refrigerator below 4°C",
       "Bread": "Keep in a cool dry place",
@@ -122,7 +122,7 @@ function estimateExpiry(itemName, purchaseDate) {
       "Cucumber": "Store in the fridge for extended freshness",
       "Mango": "Keep at room temperature until ripe, then refrigerate"
     };
-    return tips[itemName] || "Store properly to extend shelf life";
+    return tips[name] || "Store properly to extend shelf life";
   }
   
   module.exports = { estimateExpiry, getStorageTip };
