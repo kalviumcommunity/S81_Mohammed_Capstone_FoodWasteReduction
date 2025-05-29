@@ -5,11 +5,21 @@ meta {
 }
 
 post {
-  url: http://localhost:2806/signup
+  url: http://localhost:2806/grocery/add
   body: json
   auth: inherit
 }
 
 headers {
   Content-Type: application/json
+}
+
+body:json {
+  {
+    "user": "68383343a4133fe7000f4f08",
+    "name": "Tomato",
+    "quantity": 5,
+    "purchaseDate": "2025-05-25"
+  }
+  
 }
