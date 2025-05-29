@@ -44,7 +44,8 @@ function GroceryFilter({ onSelect, selectedItem }) {
 
     const fetchItems = async () => {
       try {
-       const res = await fetch(`http://localhost:2806/grocery/user/${userId}`);
+       const res = await fetch(`http://localhost:2806/grocery/${user}`);
+
 ;
         if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();

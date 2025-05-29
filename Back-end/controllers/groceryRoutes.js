@@ -1,7 +1,7 @@
 const express = require('express');
   const groceryRouter = express.Router();
   const GroceryModel = require('../model/groceryModel');
-  const { estimateExpiry, getStorageTip } = require('../utils/expiryHelper');
+  const { estimateExpiry, getStorageTip } = require('../utils/expiryHelper').default;
   // const calculateExpiry = require('../utils/calculateExpiry');
 
   // Add a grocery item
@@ -29,14 +29,15 @@ const express = require('express');
   });
 
   // Get grocery items for a user
-  groceryRouter.get('/:userId', async (req, res) => {
-    try {
-      const items = await Grocery.find({ userId: req.params.userId });
-      res.json(items);
-    } catch (err) {
-      res.status(500).json({ message: 'Error fetching groceries', error: err.message });
-    }
-  });
+ 
+groceryRouter.get('/user/:userId', async (req, res) => {
+  try {
+   const items = await GroceryModel.find({ user: req.params.userId });
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching groceries', error: err.message });
+  }
+});
 
   
   // Update grocery item by ID

@@ -56,7 +56,7 @@ const express = require("express");
 
       const token = jwt.sign({ id: user._id }, process.env.SECRET, { expiresIn: "30d" });
       res.cookie("accesstoken", token, {
-        httpOnly: true,
+        // httpOnly: true,
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
 
@@ -88,7 +88,7 @@ const express = require("express");
 //   })
 // );
 
-// PUT /user/forgot-password
+  // PUT /user/forgot-password
   userRouter.put("/forgot-password", async (req, res) => {
 
   const { email, newPassword } = req.body;
@@ -113,5 +113,6 @@ const express = require("express");
   res.status(500).json({ message: "Server error" });
   }
   });
+
 module.exports=userRouter
 

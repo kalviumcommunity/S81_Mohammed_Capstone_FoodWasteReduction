@@ -1,78 +1,78 @@
 
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
+// import React from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+// import Cookies from 'js-cookie';
 
-function Navbar() {
-  const token = Cookies.get('accesstoken');
-  const navigate = useNavigate();
+// function Navbar() {
+//   const token = Cookies.get('accesstoken');
+//   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    Cookies.remove('accesstoken');
-    navigate('/login');
-  };
+//   const handleLogout = () => {
+//     Cookies.remove('accesstoken');
+//     navigate('/login');
+//   };
 
-  return (
-    <nav className="bg-green py-4 px-6 shadow-lg">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        {/* Left: Logo + Brand Name */}
-        <Link to="/" className="flex items-center space-x-2">
-          {/* <img
-            // src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-8064-61f6-8e5f-58744f064ce5/raw?se=2025-05-05T05%3A22%3A43Z&sp=r&sv=2024-08-04&sr=b&scid=2d3fbc0c-bdb2-56af-836e-f2d676d0b802&skoid=3f3a9132-9530-48ef-96b7-fee5a811733f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-05T01%3A30%3A45Z&ske=2025-05-06T01%3A30%3A45Z&sks=b&skv=2024-08-04&sig=FDA4aCPLkT4fMwAmm1yp/y4T06hMaIJ77mP2tGfWsJY%3D"
-            // alt="PantryChef Logo"
-            className="w-10 h-10 rounded-full shadow-md"
-          /> */}
-        <h1 className="text-2xl font-extrabold text-blue-500 tracking-wide">pantryChef</h1>
+//   return (
+//     <nav className="bg-green py-4 px-6 shadow-lg">
+//       <div className="max-w-7xl mx-auto flex justify-between items-center">
+//         {/* Left: Logo + Brand Name */}
+//         <Link to="/" className="flex items-center space-x-2">
+//           {/* <img
+//             // src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-8064-61f6-8e5f-58744f064ce5/raw?se=2025-05-05T05%3A22%3A43Z&sp=r&sv=2024-08-04&sr=b&scid=2d3fbc0c-bdb2-56af-836e-f2d676d0b802&skoid=3f3a9132-9530-48ef-96b7-fee5a811733f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-05T01%3A30%3A45Z&ske=2025-05-06T01%3A30%3A45Z&sks=b&skv=2024-08-04&sig=FDA4aCPLkT4fMwAmm1yp/y4T06hMaIJ77mP2tGfWsJY%3D"
+//             // alt="PantryChef Logo"
+//             className="w-10 h-10 rounded-full shadow-md"
+//           /> */}
+//         <h1 className="text-2xl font-extrabold text-blue-500 tracking-wide">pantryChef</h1>
 
-        </Link>
+//         </Link>
 
-        {/* Right: Navigation + Auth Buttons */}
-        <div className="flex items-center space-x-6">
-          {token && (
-  <>
-    <Link to="/" className="text-black font-medium hover:text-gray-600 transition duration-200">Home</Link>
-    <Link to="/add-grocery" className="text-black font-medium hover:text-gray-600 transition duration-200">Add Grocery</Link>
-    <Link to="/profile" className="text-black font-medium hover:text-gray-600 transition duration-200">
-      <img
-        src="https://static.vecteezy.com/system/resources/previews/002/318/271/original/user-profile-icon-free-vector.jpg"
-        alt="Profile"
-        className="w-8 h-8 rounded-full"
-      />
-    </Link>
-  </>
-)}
+//         {/* Right: Navigation + Auth Buttons */}
+//         <div className="flex items-center space-x-6">
+//           {token && (
+//   <>
+//     <Link to="/" className="text-black font-medium hover:text-gray-600 transition duration-200">Home</Link>
+//     <Link to="/add-grocery" className="text-black font-medium hover:text-gray-600 transition duration-200">Add Grocery</Link>
+//     <Link to="/profile" className="text-black font-medium hover:text-gray-600 transition duration-200">
+//       <img
+//         src="https://static.vecteezy.com/system/resources/previews/002/318/271/original/user-profile-icon-free-vector.jpg"
+//         alt="Profile"
+//         className="w-8 h-8 rounded-full"
+//       />
+//     </Link>
+//   </>
+// )}
 
-          {!token ? (
-            <>
-              <Link
-                to="/login"
-                className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white transition duration-200"
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white transition duration-200"
-              >
-                Signup
-              </Link>
-            </>
-          ) : (
-            <button
-  onClick={handleLogout}
-  className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200"
->
-  Logout
-</button>
+//           {!token ? (
+//             <>
+//               <Link
+//                 to="/login"
+//                 className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white transition duration-200"
+//               >
+//                 Login
+//               </Link>
+//               <Link
+//                 to="/signup"
+//                 className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white transition duration-200"
+//               >
+//                 Signup
+//               </Link>
+//             </>
+//           ) : (
+//             <button
+//   onClick={handleLogout}
+//   className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200"
+// >
+//   Logout
+// </button>
 
-          )}
-        </div>
-      </div>
-    </nav>
-  );
-}
+//           )}
+//         </div>
+//       </div>
+//     </nav>
+//   );
+// }
 
-export default Navbar;
+// export default Navbar;
 
 
 // // src/components/NavBar.jsx
@@ -170,3 +170,67 @@ export default Navbar;
 // };
 
 // export default Navbar;
+
+
+
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
+function Navbar() {
+  const navigate = useNavigate();
+  const [token, setToken] = useState(null);
+
+  // Check token on mount and on token change
+  useEffect(() => {
+    setToken(Cookies.get('accesstoken'));
+  }, [Cookies.get('accesstoken')]);
+
+  const handleLogout = () => {
+    Cookies.remove('accesstoken');
+    setToken(null); // Update token state
+    navigate('/login');
+  };
+
+  return (
+    <nav className="bg-green py-4 px-6 shadow-lg">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
+        {/* Left: Logo + Brand Name */}
+        <Link to="/" className="flex items-center space-x-2">
+          <h1 className="text-2xl font-extrabold text-blue-500 tracking-wide">pantryChef</h1>
+        </Link>
+
+        {/* Right: Nav Buttons */}
+        <div className="flex items-center space-x-6">
+          {/* {console.log(token)} */}
+          {token ? (
+            <>
+              <Link to="/" className="text-black font-medium hover:text-gray-600">Home</Link>
+              <Link to="/add-grocery" className="text-black font-medium hover:text-gray-600">Add Grocery</Link>
+              <Link to="/profile" className="text-black font-medium hover:text-gray-600">
+                <img
+                  src="https://static.vecteezy.com/system/resources/previews/002/318/271/original/user-profile-icon-free-vector.jpg"
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full"
+                />
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition duration-200"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">Login</Link>
+              <Link to="/signup" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">Signup</Link>
+            </>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+export default Navbar;

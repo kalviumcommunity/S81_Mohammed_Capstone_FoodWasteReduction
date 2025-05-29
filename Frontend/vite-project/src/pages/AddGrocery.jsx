@@ -3,7 +3,7 @@ import GroceryFilter from '../components/GroceryFilter';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 
-const API_BASE = 'http://localhost:2806/grocery';
+const API_BASE = 'http://localhost:2806/grocery/user';
 
 // Normalize item name to capitalized form
 function normalizeItemName(name) {
@@ -12,7 +12,7 @@ function normalizeItemName(name) {
 }
 
 // Calculate expiry date based on purchase date and item
-function calculateExpiry(itemName, purchaseDate) {
+function calculateExpiry(name, purchaseDate) {
   const expiryDays = {
     Spinach: 5,
     Kale: 7,
@@ -26,14 +26,14 @@ function calculateExpiry(itemName, purchaseDate) {
     // Add more items and their expiry days here
   };
 
-  const days = expiryDays[itemName] || 10; // default 10 days expiry
+  const days = expiryDays[name] || 10; // default 10 days expiry
   const purchase = new Date(purchaseDate);
   purchase.setDate(purchase.getDate() + days);
   return purchase.toISOString();
 }
 
 // Storage tips dictionary
-function getStorageTip(itemName) {
+function getStorageTip(name) {
   const tips = {
     Spinach: 'Keep in fridge in a sealed container.',
     Potato: 'Store in a cool, dark place.',
@@ -47,7 +47,7 @@ function getStorageTip(itemName) {
     // Add more tips here
   };
 
-  return tips[itemName] || 'Try storing in a cool, dry place.';
+  return tips[name] || 'Try storing in a cool, dry place.';
 }
 
 function AddGrocery() {
@@ -65,7 +65,7 @@ function AddGrocery() {
 
   const fetchGroceries = async () => {
     try {
-      const res = await fetch(`${API_BASE}/user/${user}`);
+     const res = await fetch(`${API_BASE}/${user}`);
       const data = await res.json();
       setGroceries(data.groceries || data); // adjust depending on API response
     } catch (err) {
@@ -95,15 +95,16 @@ function AddGrocery() {
       const storageTip = getStorageTip(normalizedName);
 
       const body = {
-        userId: user,
-        itemName: normalizedName,
+       user: user,
+        name: name,
         quantity,
         purchaseDate,
-        estimatedExpiry,
-        storageTip,
+        expiryDate: estimatedExpiry,
+        storageTips: storageTip,
       };
 
       const url = editId ? `${API_BASE}/update/${editId}` : `${API_BASE}/add`;
+
 
       const res = await fetch(url, {
         method: editId ? 'PUT' : 'POST',
@@ -134,9 +135,8 @@ function AddGrocery() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`${API_BASE}/delete/${id}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(`${API_BASE}/delete/${id}`, { method: 'DELETE' }); // DELETE /grocery/delete/:id
+
 
       if (res.ok) {
         fetchGroceries();
@@ -149,7 +149,7 @@ function AddGrocery() {
   };
 
   const handleEdit = (item) => {
-    setName(item.itemName);
+    setName(item.name);
     setQuantity(item.quantity);
     setPurchaseDate(item.purchaseDate.split('T')[0]);
     setEditId(item._id);
@@ -195,7 +195,7 @@ function AddGrocery() {
           groceries.map((item) => (
             <div key={item._id} className="flex justify-between items-center mb-2 border p-2 rounded-md">
               <div>
-                <p><strong>{item.itemName}</strong> ({item.quantity})</p>
+                <p><strong>{item.name}</strong> ({item.quantity})</p>
                 <p className="text-sm text-gray-600">Purchased: {item.purchaseDate.split('T')[0]}</p>
                 <p className="text-sm text-red-600">
                   Expires: {item.estimatedExpiry ? new Date(item.estimatedExpiry).toLocaleDateString() : 'N/A'}

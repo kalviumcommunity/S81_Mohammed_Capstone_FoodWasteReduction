@@ -125,4 +125,4 @@ function estimateExpiry(name, purchaseDate) {
     return tips[name] || "Store properly to extend shelf life";
   }
   
-  module.exports = { estimateExpiry, getStorageTip };
+  export default { estimateExpiry, getStorageTip };

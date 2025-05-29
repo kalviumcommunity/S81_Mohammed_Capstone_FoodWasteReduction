@@ -1,0 +1,15 @@
+meta {
+  name: login
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:2806/signup
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}

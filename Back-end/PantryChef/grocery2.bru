@@ -1,0 +1,15 @@
+meta {
+  name: grocery2
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:2806/grocery/add
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}

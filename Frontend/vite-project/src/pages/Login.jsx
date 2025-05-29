@@ -31,16 +31,18 @@ function Login(props) {
 
     try {
       await axios
-        .post("http://localhost:2806/user/login", {
-          email,
-          password,
-        }, {
-          withCredentials: true   
-        })
-        .then((response) => {
-          console.log(response,"888")
-          navigate("/");
-        });
+  .post("http://localhost:2806/user/login", {
+    email,
+    password,
+  }, {
+    withCredentials: true   
+  })
+  .then((response) => {
+    console.log(response, "888");
+    navigate("/");
+    window.location.reload(); // 👈 Force navbar to re-check login state
+  });
+
 
       console.log("Login successful");
       

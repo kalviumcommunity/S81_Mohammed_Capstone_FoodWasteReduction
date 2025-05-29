@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "PantryChef",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
