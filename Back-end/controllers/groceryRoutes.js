@@ -42,22 +42,50 @@ groceryRouter.get('/user/:userId', async (req, res) => {
 
   
   // Update grocery item by ID
+  // groceryRouter.put('/update/:id', async (req, res) => {
+  //   try {
+  //     const { name, quantity, purchaseDate } = req.body;
+  //     const updated = await GroceryModel.findByIdAndUpdate(
+  //       req.params.id,
+  //       { name: name, quantity, purchaseDate },
+  //       { new: true }
+  //     );
+
+  //     if (!updated) return res.status(404).json({ error: 'Item not found' });
+
+  //     res.status(200).json({ message: 'Item updated successfully', grocery: updated });
+  //   } catch (err) {
+  //     res.status(500).json({ error: 'Failed to update grocery item' });
+  //   }
+  // });
+
   groceryRouter.put('/update/:id', async (req, res) => {
-    try {
-      const { name, quantity, purchaseDate } = req.body;
-      const updated = await GroceryModel.findByIdAndUpdate(
-        req.params.id,
-        { name: name, quantity, purchaseDate },
-        { new: true }
-      );
+  try {
+    const { name, quantity, purchaseDate } = req.body;
 
-      if (!updated) return res.status(404).json({ error: 'Item not found' });
+    const estimatedExpiry = estimateExpiry(name, purchaseDate);
+    const storageTip = getStorageTip(name);
 
-      res.status(200).json({ message: 'Item updated successfully', grocery: updated });
-    } catch (err) {
-      res.status(500).json({ error: 'Failed to update grocery item' });
-    }
-  });
+    const updated = await GroceryModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        quantity,
+        purchaseDate,
+        expiryDate: estimatedExpiry,
+        storageTips: storageTip
+      },
+      { new: true }
+    );
+
+    if (!updated) return res.status(404).json({ error: 'Item not found' });
+
+    res.status(200).json({ message: 'Item updated successfully', grocery: updated });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update grocery item' });
+  }
+});
+
 
 // Delete grocery item by ID
 groceryRouter.delete('/delete/:id', async (req, res) => {
