@@ -1,8 +1,9 @@
 const express = require('express');
   const groceryRouter = express.Router();
   const GroceryModel = require('../model/groceryModel');
-  const { estimateExpiry, getStorageTip } = require('../utils/expiryHelper').default;
-  // const calculateExpiry = require('../utils/calculateExpiry');
+  const expiryHelper = require('../utils/expiryHelper').default;
+  const estimateExpiry = expiryHelper.estimateExpiry;
+  const getStorageTip = expiryHelper.getStorageTip;
 
   // Add a grocery item
   groceryRouter.post('/add', async (req, res) => {
