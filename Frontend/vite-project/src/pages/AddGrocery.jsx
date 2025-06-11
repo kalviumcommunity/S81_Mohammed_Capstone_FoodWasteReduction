@@ -172,13 +172,27 @@
 
 
 
-
 import React, { useState, useEffect } from 'react';
 import GroceryFilter from '../components/GroceryFilter';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 
 const API_BASE = 'http://localhost:2806/grocery';
+
+// Mapping of grocery names to image URLs
+const groceryImages = {
+  "Tomato": "https://media.post.rvohealth.io/wp-content/uploads/2020/09/AN313-Tomatoes-732x549-Thumb-732x549.jpg",
+  "Onion": "https://www.allthatgrows.in/cdn/shop/products/Onion-Red_grande.jpg?v=1598081871",
+  "Potato": "https://selal.ae/wp-content/uploads/2024/10/313dtY-LOEL.jpg",
+  "Carrot": "https://www.jiomart.com/images/product/original/590000186/carrot-orange-500-g-product-images-o590000186-p590000186-0-202409171905.jpg?im=Resize=(1000,1000)",
+  "Banana": "https://cdn-icons-png.flaticon.com/512/590/590681.png",
+  "Apple": "https://cdn-icons-png.flaticon.com/512/590/590690.png",
+  "Grapes": "https://cdn-icons-png.flaticon.com/512/590/590691.png",
+  "Cucumber": "https://cdn-icons-png.flaticon.com/512/590/590679.png",
+  "Garlic": "https://cdn-icons-png.flaticon.com/512/590/590695.png",
+  "Ginger": "https://cdn-icons-png.flaticon.com/512/590/590693.png",
+  "Bottle Gourd (Lauki)":"https://m.media-amazon.com/images/I/419Vx6EB9OL._AC_UF1000,1000_QL80_.jpg",
+};
 
 function AddGrocery() {
   const [name, setName] = useState('');
@@ -220,13 +234,7 @@ function AddGrocery() {
     setLoading(true);
 
     try {
-      const body = {
-        user,
-        name,
-        quantity,
-        purchaseDate,
-      };
-
+      const body = { user, name, quantity, purchaseDate };
       const url = editId ? `${API_BASE}/update/${editId}` : `${API_BASE}/add`;
 
       const res = await fetch(url, {
@@ -263,7 +271,7 @@ function AddGrocery() {
       });
 
       if (res.ok) {
-        fetchGroceries(); // Refresh the list
+        fetchGroceries();
       } else {
         setError('Delete failed.');
       }
@@ -328,24 +336,31 @@ function AddGrocery() {
             groceries.map((item) => (
               <div
                 key={item._id}
-                className="flex justify-between items-center mb-2 border p-2 rounded-md bg-white bg-opacity-80"
+                className="flex justify-between items-start gap-4 mb-2 border p-2 rounded-md bg-white bg-opacity-80"
               >
-                <div>
-                  <p>
-                    <strong>{item.name}</strong> ({item.quantity})
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Purchased: {item.purchaseDate?.split('T')[0]}
-                  </p>
-                  <p className="text-sm text-red-600">
-                    Expires:{' '}
-                    {item.expiryDate
-                      ? new Date(item.expiryDate).toLocaleDateString()
-                      : 'N/A'}
-                  </p>
-                  <p className="text-sm italic">
-                    Tip: {item.storageTips || 'No tip available.'}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={groceryImages[item.name] || "https://via.placeholder.com/40"}
+                    alt={item.name}
+                    className="w-10 h-10 object-contain rounded"
+                  />
+                  <div>
+                    <p>
+                      <strong>{item.name}</strong> ({item.quantity})
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Purchased: {item.purchaseDate?.split('T')[0]}
+                    </p>
+                    <p className="text-sm text-red-600">
+                      Expires:{' '}
+                      {item.expiryDate
+                        ? new Date(item.expiryDate).toLocaleDateString()
+                        : 'N/A'}
+                    </p>
+                    <p className="text-sm italic">
+                      Tip: {item.storageTips || 'No tip available.'}
+                    </p>
+                  </div>
                 </div>
                 <div className="space-x-2">
                   <button
@@ -371,3 +386,4 @@ function AddGrocery() {
 }
 
 export default AddGrocery;
+
