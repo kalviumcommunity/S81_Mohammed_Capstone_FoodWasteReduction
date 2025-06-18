@@ -46,9 +46,9 @@ function Home() {
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat flex flex-col"
-      style={{
-        backgroundImage: `url('https://media.istockphoto.com/id/1145640968/photo/eco-bag-with-zero-waste-shopping-fruit-vegetables-cereals.jpg?s=612x612&w=0&k=20&c=fbTrF256ZJGLdhmEH7qECCuDdkro3Zcuc7DM9abzRfs=')`
-      }}
+      // style={{
+      //   backgroundImage: `url('https://media.istockphoto.com/id/1145640968/photo/eco-bag-with-zero-waste-shopping-fruit-vegetables-cereals.jpg?s=612x612&w=0&k=20&c=fbTrF256ZJGLdhmEH7qECCuDdkro3Zcuc7DM9abzRfs=')`
+      // }}
     >
       <div className="bg-white/20 flex-grow py-8 px-4 md:px-10">
         {/* Welcome Banner */}
@@ -113,8 +113,27 @@ function Home() {
 
       {/* Footer */}
       <footer className="bg-white text-black text-center py-4">
-        Made by Mohammed Shammas
-      </footer>
+  <p className="mb-2">Made by Mohammed Shammas</p>
+  <div className="flex justify-center gap-6 text-blue-600">
+    <a
+      href="https://www.linkedin.com/in/mohammed-shammas-uddin-61ba57353/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover:underline hover:text-blue-800"
+    >
+      LinkedIn
+    </a>
+    <a
+      href="https://www.instagram.com/itz__shammas/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover:underline hover:text-pink-600"
+    >
+      Instagram
+    </a>
+  </div>
+</footer>
+
     </div>
   );
 }

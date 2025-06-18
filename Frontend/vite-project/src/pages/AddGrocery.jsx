@@ -290,10 +290,10 @@ function AddGrocery() {
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
-      style={{
-        backgroundImage:
-          'url("https://media.istockphoto.com/id/1145640968/photo/eco-bag-with-zero-waste-shopping-fruit-vegetables-cereals.jpg?s=612x612&w=0&k=20&c=fbTrF256ZJGLdhmEH7qECCuDdkro3Zcuc7DM9abzRfs=")',
-      }}
+      // style={{
+      //   backgroundImage:
+      //     'url("https://media.istockphoto.com/id/1145640968/photo/eco-bag-with-zero-waste-shopping-fruit-vegetables-cereals.jpg?s=612x612&w=0&k=20&c=fbTrF256ZJGLdhmEH7qECCuDdkro3Zcuc7DM9abzRfs=")',
+      // }}
     >
       <div className="w-full max-w-lg bg-white bg-opacity-40 shadow-lg rounded-lg p-6">
         <h2 className="text-xl font-bold mb-4 text-center">
