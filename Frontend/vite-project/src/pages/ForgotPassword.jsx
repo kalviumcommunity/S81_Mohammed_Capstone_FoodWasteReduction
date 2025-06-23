@@ -23,7 +23,7 @@
           newPassword,
         });
               setMsg(res.data.message);
-              setTimeout(() => navigate("/login"), 2000);
+              setTimeout(() => navigate("/login"), 200);
             } catch (err) {
               setError(err.response?.data?.message || "Failed to reset password");
             }
