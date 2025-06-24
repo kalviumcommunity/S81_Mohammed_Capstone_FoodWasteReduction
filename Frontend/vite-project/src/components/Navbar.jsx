@@ -248,6 +248,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHouse } from '@fortawesome/free-solid-svg-icons';
+import { faCartPlus } from '@fortawesome/free-solid-svg-icons';
+
 
 function Navbar() {
   const navigate = useNavigate();
@@ -265,37 +269,46 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-green-600 border-b-2 border-gray-900 py-4 px-6 shadow-md">
+    
+    <nav className="bg-White py-4 px-6 shadow-lg">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Left: Logo + Brand Name */}
         <Link to="/" className="flex items-center space-x-2">
-          <h1 className="text-2xl font-extrabold text-white tracking-wide">pantryChef</h1>
+          <h1 className="text-2xl font-extrabold text-gray tracking-wide">pantryChef</h1>
         </Link>
 
         {/* Right: Nav Buttons */}
         <div className="flex items-center space-x-6">
           {token ? (
             <>
-              <Link to="/" className="text-black font-medium hover:text-gray-200">Home</Link>
-              <Link to="/add-grocery" className="text-black font-medium hover:text-gray-200">Add Grocery</Link>
-              <Link to="/profile" className="text-black font-medium hover:text-gray-200">
+              <Link to="/" className="flex items-center gap-2 text-black font-medium hover:text-black/70">
+  <FontAwesomeIcon icon={faHouse} />
+  
+</Link>
+
+              <Link to="/add-grocery" className="flex items-center gap-2 text-black font-medium hover:text-black/70">
+  <FontAwesomeIcon icon={faCartPlus} />
+ 
+</Link>
+
+              <Link to="/profile" className="text-black font-medium hover:text-black-200">
                 <img
                   src="https://static.vecteezy.com/system/resources/previews/002/318/271/original/user-profile-icon-free-vector.jpg"
                   alt="Profile"
                   className="w-8 h-8 rounded-full"
                 />
               </Link>
-              <button
-                onClick={handleLogout}
-                className="bg-white text-black-700 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-200 font-semibold"
-              >
-                Logout
-              </button>
+               <button
+                             onClick={handleLogout}
+                             className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray transition duration-200"
+                           >
+                             Logout
+                           </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="bg-white text-black-700 border border-white font-semibold px-4 py-2 rounded-md hover:bg-green-500 hover:text-white">Login</Link>
-              <Link to="/signup" className="bg-white text-black-700 border border-white font-semibold px-4 py-2 rounded-md hover:bg-green-500 hover:text-white">Signup</Link>
+             <Link to="/login" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">Login</Link>
+             <Link to="/signup" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">Signup</Link>
             </>
           )}
         </div>
