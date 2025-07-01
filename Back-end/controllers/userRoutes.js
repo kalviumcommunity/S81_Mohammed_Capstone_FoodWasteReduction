@@ -56,13 +56,9 @@ const express = require("express");
 
       const token = jwt.sign({ id: user._id }, process.env.SECRET, { expiresIn: "30d" });
       res.cookie("accesstoken", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "None",  // ✅ Needed for cross-origin (Netlify → Render)
-  maxAge: 30 * 24 * 60 * 60 * 1000
-});
-
-
+        // httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
 
       res.status(200).json({ success: true, message: "Login successful" });
     })

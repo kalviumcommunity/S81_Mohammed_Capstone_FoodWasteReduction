@@ -44,12 +44,8 @@ function Home() {
   }, []);
 
   return (
-    <div
-      className="min-h-screen bg-cover bg-center bg-no-repeat flex flex-col"
-      style={{
-        backgroundImage: `url('https://wallpapercave.com/wp/wp10400986.jpg')`
-      }}
-    >
+            <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-10">
+
       <div className="bg-white/20 flex-grow py-8 px-4 md:px-10">
         {/* Welcome Banner */}
         <div className="bg-white shadow-xl rounded-lg p-6 mb-8 border-l-4 border-black-500">

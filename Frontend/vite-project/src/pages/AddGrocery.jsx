@@ -286,15 +286,10 @@ function AddGrocery() {
     setPurchaseDate(item.purchaseDate.split('T')[0]);
     setEditId(item._id);
   };
-
-  return (
-    <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
-      style={{
-        backgroundImage:
-          'url("https://wallpapercave.com/wp/wp10400986.jpg")',
-      }}
-    >
+ return (
+     <div className="p-4 max-w-lg mx-auto bg-white shadow-lg rounded-lg">
+      <h2 className="text-xl font-bold mb-4 text-center">{editId ? 'Update Item' : 'Add Grocery Item'}</h2>
+    
       <div className="w-full max-w-lg bg-white bg-opacity-40 shadow-lg rounded-lg p-6">
         <h2 className="text-xl font-bold mb-4 text-center">
           {editId ? 'Update Item' : 'Add Grocery Item'}

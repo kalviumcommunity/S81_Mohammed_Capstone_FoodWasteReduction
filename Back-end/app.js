@@ -8,14 +8,9 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://your-netlify-site-name.netlify.app"  // ✅ Add Netlify frontend URL here
-  ],
+  origin: ["http://localhost:5173", "s81-mohammed-capstone-food-waste-re-eight.vercel.app"],
   credentials: true
 }));
-
-
 
 
 const userRouter = require('./controllers/userRoutes');
