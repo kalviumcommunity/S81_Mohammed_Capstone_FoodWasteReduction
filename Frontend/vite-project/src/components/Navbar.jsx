@@ -242,22 +242,17 @@
 
 
 
-
-
-
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse } from '@fortawesome/free-solid-svg-icons';
-import { faCartPlus } from '@fortawesome/free-solid-svg-icons';
-
+import { faHouse, faCartPlus } from '@fortawesome/free-solid-svg-icons';
 
 function Navbar() {
   const navigate = useNavigate();
   const [token, setToken] = useState(null);
 
-  // Check token on mount and on token change
+  // Check token on mount and when cookie changes
   useEffect(() => {
     setToken(Cookies.get('accesstoken'));
   }, [Cookies.get('accesstoken')]);
@@ -269,8 +264,7 @@ function Navbar() {
   };
 
   return (
-    
-    <nav className="bg-White py-4 px-6 shadow-lg">
+    <nav className="bg-white py-4 px-6 shadow-lg border-b border-gray-300">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Left: Logo + Brand Name */}
         <Link to="/" className="flex items-center space-x-2">
@@ -281,15 +275,15 @@ function Navbar() {
         <div className="flex items-center space-x-6">
           {token ? (
             <>
-              <Link to="/" className="flex items-center gap-2 text-black font-medium hover:text-black/70">
-  <FontAwesomeIcon icon={faHouse} />
-  
-</Link>
+              {/* <Link to="/" className="flex items-center gap-2 text-black font-medium hover:text-black/70">
+                <FontAwesomeIcon icon={faHouse} />
+              </Link> */}
+               <Link to="/" className="text-black font-medium hover:text-gray-600">Home</Link>
 
-              <Link to="/add-grocery" className="flex items-center gap-2 text-black font-medium hover:text-black/70">
-  <FontAwesomeIcon icon={faCartPlus} />
- 
-</Link>
+              {/* <Link to="/add-grocery" className="flex items-center gap-2 text-black font-medium hover:text-black/70">
+                <FontAwesomeIcon icon={faCartPlus} />
+              </Link> */}
+              <Link to="/add-grocery" className="text-black font-medium hover:text-gray-600">Add Grocery</Link>
 
               <Link to="/profile" className="text-black font-medium hover:text-black-200">
                 <img
@@ -298,17 +292,22 @@ function Navbar() {
                   className="w-8 h-8 rounded-full"
                 />
               </Link>
-               <button
-                             onClick={handleLogout}
-                             className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray transition duration-200"
-                           >
-                             Logout
-                           </button>
+
+              <button
+                onClick={handleLogout}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray transition duration-200"
+              >
+                Logout
+              </button>
             </>
           ) : (
             <>
-             <Link to="/login" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">Login</Link>
-             <Link to="/signup" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">Signup</Link>
+              <Link to="/login" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">
+                Login
+              </Link>
+              <Link to="/signup" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">
+                Signup
+              </Link>
             </>
           )}
         </div>
@@ -318,3 +317,12 @@ function Navbar() {
 }
 
 export default Navbar;
+
+
+
+
+
+
+
+
+
