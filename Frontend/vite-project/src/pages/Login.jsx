@@ -23,29 +23,34 @@
           };
 
           const handleSubmit = async () => {
-  const { email, password } = data;
-  if (!email || !password) {
-    setError("Please fill all fields");
-    return;
-  }
+            const { email, password } = data;
+            if (!email || !password) {
+              setError("Please fill all fields");
+              return;
+            }
 
-  try {
-    await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/login`, {
-      email,
-      password,
-    }, {
-      withCredentials: true, // ✅ Required for cookie-based auth
-    });
+            try {
+              await axios
+          .post("http://localhost:2806/user/login", {
+            email,
+            password,
+          }, {
+            withCredentials: true   
+          })
+          .then((response) => {
+            console.log(response, "888");
+            navigate("/");
+            window.location.reload(); // 👈 Force navbar to re-check login state
+          });
 
-    console.log("Login successful");
-    navigate("/");
-    window.location.reload();
-  } catch (error) {
-    console.log(error);
-    setError(error.response?.data?.message || "Login failed");
-  }
-};
 
+              console.log("Login successful");
+              
+            } catch (error) {
+              console.log(error);
+              setError(error.response.data.message);
+            }
+          };
 
           return (
             <>
