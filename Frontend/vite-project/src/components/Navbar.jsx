@@ -245,72 +245,152 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faCartPlus } from '@fortawesome/free-solid-svg-icons';
+import ExpiryNotification from './ExpiryNotification';
 
 function Navbar() {
   const navigate = useNavigate();
   const [token, setToken] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Check token on mount and when cookie changes
   useEffect(() => {
     setToken(Cookies.get('accesstoken'));
   }, [Cookies.get('accesstoken')]);
 
   const handleLogout = () => {
     Cookies.remove('accesstoken');
-    setToken(null); // Update token state
+    setToken(null);
     navigate('/login');
+    setMobileMenuOpen(false);
   };
 
   return (
-    <nav className="bg-white py-4 px-6 shadow-lg border-b border-gray-300">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        {/* Left: Logo + Brand Name */}
-        <Link to="/" className="flex items-center space-x-2">
-          <h1 className="text-2xl font-extrabold text-gray tracking-wide">pantryChef</h1>
-        </Link>
+    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link to="/home" className="flex items-center">
+            <h1 className="text-xl font-bold text-gray-900">PantryChef</h1>
+          </Link>
 
-        {/* Right: Nav Buttons */}
-        <div className="flex items-center space-x-6">
-          {token ? (
-            <>
-              {/* <Link to="/" className="flex items-center gap-2 text-black font-medium hover:text-black/70">
-                <FontAwesomeIcon icon={faHouse} />
-              </Link> */}
-               <Link to="/" className="text-black font-medium hover:text-gray-600">Home</Link>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-1">
+            {token ? (
+              <>
+                <Link 
+                  to="/home" 
+                  className="px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors text-sm"
+                >
+                  Home
+                </Link>
+                <Link 
+                  to="/add-grocery" 
+                  className="px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors text-sm"
+                >
+                  Add Grocery
+                </Link>
+                <Link 
+                  to="/profile" 
+                  className="px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors text-sm"
+                >
+                  Profile
+                </Link>
+                <ExpiryNotification />
+                <button
+                  onClick={handleLogout}
+                  className="ml-2 bg-gray-900 text-white px-4 py-2 rounded font-medium hover:bg-gray-800 transition-colors text-sm"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link 
+                  to="/login" 
+                  className="bg-gray-900 text-white px-4 py-2 rounded font-medium hover:bg-gray-800 transition-colors text-sm"
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/signup" 
+                  className="ml-2 bg-white text-gray-900 border border-gray-300 px-4 py-2 rounded font-medium hover:bg-gray-50 transition-colors text-sm"
+                >
+                  Signup
+                </Link>
+              </>
+            )}
+          </div>
 
-              {/* <Link to="/add-grocery" className="flex items-center gap-2 text-black font-medium hover:text-black/70">
-                <FontAwesomeIcon icon={faCartPlus} />
-              </Link> */}
-              <Link to="/add-grocery" className="text-black font-medium hover:text-gray-600">Add Grocery</Link>
-
-              <Link to="/profile" className="text-black font-medium hover:text-black-200">
-                <img
-                  src="https://static.vecteezy.com/system/resources/previews/002/318/271/original/user-profile-icon-free-vector.jpg"
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full"
-                />
-              </Link>
-
-              <button
-                onClick={handleLogout}
-                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray transition duration-200"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">
-                Login
-              </Link>
-              <Link to="/signup" className="bg-white text-black border border-black font-semibold px-4 py-2 rounded-md hover:bg-black hover:text-white">
-                Signup
-              </Link>
-            </>
-          )}
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded text-gray-700 hover:bg-gray-100 focus:outline-none transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden pb-4 fade-in">
+            <div className="space-y-1">
+              {token ? (
+                <>
+                  <Link
+                    to="/home"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/add-grocery"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors"
+                  >
+                    Add Grocery
+                  </Link>
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors"
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 rounded bg-gray-900 text-white font-medium hover:bg-gray-800 transition-colors mt-2"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2 rounded bg-gray-900 text-white font-medium text-center hover:bg-gray-800 transition-colors"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2 rounded bg-white text-gray-900 border border-gray-300 font-medium text-center hover:bg-gray-50 transition-colors"
+                  >
+                    Signup
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
