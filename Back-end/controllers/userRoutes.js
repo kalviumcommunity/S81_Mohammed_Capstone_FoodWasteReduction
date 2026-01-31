@@ -3,6 +3,7 @@
             const Errorhandler = require("../utils/errorhadler");
             const bcrypt = require("bcrypt");
             const jwt = require("jsonwebtoken");
+            const mongoose = require("mongoose");
             const catchAsyncError = require("../middleware/catchAsyncError");
             const upload = require("../middleware/multer");
             const userRouter = express.Router();
@@ -102,6 +103,60 @@
                 return res.status(200).json({ message: { profilePhoto: user.profilePhoto } });
               } catch (err) {
                 res.status(500).json({ message: "Upload failed", error: err.message });
+              }
+            });
+
+            userRouter.post("/add-address", requireAuth, async (req, res) => {
+              try {
+                const { street, city, state, postalCode, country, isDefault } = req.body;
+                
+                if (!street || !city || !state || !postalCode || !country) {
+                  return res.status(400).json({ message: "All fields are required" });
+                }
+
+                const newAddress = {
+                  street,
+                  city,
+                  state,
+                  postalCode,
+                  country,
+                  isDefault: isDefault || false,
+                };
+
+                const user = await UserModel.findByIdAndUpdate(
+                  req.userId,
+                  { $push: { address: newAddress } },
+                  { new: true }
+                ).select("-password");
+
+                if (!user) {
+                  return res.status(404).json({ message: "User not found" });
+                }
+
+                res.status(200).json({ message: "Address added successfully", user });
+              } catch (err) {
+                console.error("Add address error:", err);
+                res.status(500).json({ message: "Failed to add address", error: err.message });
+              }
+            });
+
+            userRouter.delete("/delete-address/:addressId", requireAuth, async (req, res) => {
+              try {
+                const { addressId } = req.params;
+
+                const user = await UserModel.findByIdAndUpdate(
+                  req.userId,
+                  { $pull: { address: { _id: addressId } } },
+                  { new: true }
+                );
+
+                if (!user) {
+                  return res.status(404).json({ message: "User not found" });
+                }
+
+                res.status(200).json({ message: "Address deleted successfully" });
+              } catch (err) {
+                res.status(500).json({ message: "Failed to delete address", error: err.message });
               }
             });
 

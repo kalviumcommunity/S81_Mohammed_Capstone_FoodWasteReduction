@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUser, FaEnvelope, FaPhone, FaMapMarker, FaCamera, FaPlus } from "react-icons/fa";
+import CreateAddress from "../components/CreateAddress";
+import AddressCard from "../components/AddressCard";
 
 
 			export default function Profile() {
@@ -79,6 +81,46 @@ import { FaUser, FaEnvelope, FaPhone, FaMapMarker, FaCamera, FaPlus } from "reac
 						alert("Failed to upload photo. Please try again.");
 					} finally {
 						setUploading(false);
+					}
+				};
+
+				const deleteAddress = async (addressId) => {
+					if (!window.confirm("Are you sure you want to delete this address?")) return;
+					
+					try {
+						const response = await axios.delete(
+							`http://localhost:2806/user/delete-address/${addressId}`,
+							{ withCredentials: true }
+						);
+						if (response.status === 200) {
+							setAddresses(addresses.filter(addr => addr._id !== addressId));
+							alert("Address deleted successfully");
+						}
+					} catch (error) {
+						console.error("Delete error:", error);
+						alert("Failed to delete address");
+					}
+				};
+
+				const refreshAddresses = async () => {
+					try {
+						const response = await fetch(
+							`http://localhost:2806/user/checklogin`,
+							{
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+								},
+								credentials: "include"
+							}
+						);
+						if (response.ok) {
+							const data = await response.json();
+							setAddresses(data.message.address || []);
+							setPersonalDetails(data.message);
+						}
+					} catch (error) {
+						console.error("Refresh error:", error);
 					}
 				};
 
@@ -209,12 +251,12 @@ import { FaUser, FaEnvelope, FaPhone, FaMapMarker, FaCamera, FaPlus } from "reac
 										</div>
 									) : null}
 									{addresses.map((address) => (
-										<AddressCard key={address._id} {...address} />
+										<AddressCard key={address._id} {...address} onDelete={deleteAddress} />
 									))}
 								</div>
 							</div>
 
-							{addAddress && <CreateAddress />}
+							{addAddress && <CreateAddress onAddressAdded={refreshAddresses} onClose={() => setAddAddress(false)} />}
 						</div>
 					</div>
 				);
