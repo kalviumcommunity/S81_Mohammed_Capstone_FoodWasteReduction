@@ -1,65 +1,70 @@
 const express = require('express');
-  const groceryRouter = express.Router();
-  const GroceryModel = require('../model/groceryModel');
-  const expiryHelper = require('../utils/expiryHelper').default;
-  const estimateExpiry = expiryHelper.estimateExpiry;
-  const getStorageTip = expiryHelper.getStorageTip;
+const groceryRouter = express.Router();
+const GroceryModel = require('../model/groceryModel');
+const { estimateExpiry, getStorageTip, getExpiryStatus } = require('../utils/expiryHelper');
 
-  // Add a grocery item
-  groceryRouter.post('/add', async (req, res) => {
-    const { user, name, quantity, purchaseDate } = req.body;
+// Add a grocery item
+groceryRouter.post('/add', async (req, res) => {
+  const { user, name, quantity, purchaseDate } = req.body;
 
-    try {
-      const estimatedExpiry = estimateExpiry(name, purchaseDate);
-      const storageTip = getStorageTip(name);
+  try {
+    const estimatedExpiry = estimateExpiry(name, purchaseDate);
+    const storageTip = getStorageTip(name);
 
-      const item = new GroceryModel({
-        user: user,
-        name: name,
-        quantity,
-        purchaseDate,
-        expiryDate: estimatedExpiry,
-        storageTips: storageTip,
-      });
+    const item = new GroceryModel({
+      user: user,
+      name: name,
+      quantity,
+      purchaseDate,
+      expiryDate: estimatedExpiry,
+      storageTips: storageTip,
+    });
 
-      await item.save();
-      res.status(201).json(item);
-    } catch (err) {
-      res.status(500).json({ message: 'Error adding item', error: err.message });
-    }
-  });
+    await item.save();
+    res.status(201).json(item);
+  } catch (err) {
+    res.status(500).json({ message: 'Error adding item', error: err.message });
+  }
+});
 
-  // Get grocery items for a user
- 
+// Get grocery items for a user
 groceryRouter.get('/user/:userId', async (req, res) => {
   try {
-   const items = await GroceryModel.find({ user: req.params.userId });
+    const items = await GroceryModel.find({ user: req.params.userId });
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching groceries', error: err.message });
   }
 });
 
-  
-  // Update grocery item by ID
-  // groceryRouter.put('/update/:id', async (req, res) => {
-  //   try {
-  //     const { name, quantity, purchaseDate } = req.body;
-  //     const updated = await GroceryModel.findByIdAndUpdate(
-  //       req.params.id,
-  //       { name: name, quantity, purchaseDate },
-  //       { new: true }
-  //     );
+// Get expiring items for notifications (items expiring within specified days)
+groceryRouter.get('/expiring/:userId', async (req, res) => {
+  try {
+    const { days = 3 } = req.query; // Default to 3 days
+    const items = await GroceryModel.find({ user: req.params.userId });
+    
+    const expiringItems = items
+      .map(item => {
+        const status = getExpiryStatus(item.expiryDate);
+        return {
+          ...item.toObject(),
+          expiryStatus: status
+        };
+      })
+      .filter(item => item.expiryStatus.daysLeft <= parseInt(days))
+      .sort((a, b) => a.expiryStatus.daysLeft - b.expiryStatus.daysLeft);
 
-  //     if (!updated) return res.status(404).json({ error: 'Item not found' });
+    res.json({
+      count: expiringItems.length,
+      items: expiringItems
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching expiring items', error: err.message });
+  }
+});
 
-  //     res.status(200).json({ message: 'Item updated successfully', grocery: updated });
-  //   } catch (err) {
-  //     res.status(500).json({ error: 'Failed to update grocery item' });
-  //   }
-  // });
-
-  groceryRouter.put('/update/:id', async (req, res) => {
+// Update grocery item by ID
+groceryRouter.put('/update/:id', async (req, res) => {
   try {
     const { name, quantity, purchaseDate } = req.body;
 
@@ -85,7 +90,6 @@ groceryRouter.get('/user/:userId', async (req, res) => {
     res.status(500).json({ error: 'Failed to update grocery item' });
   }
 });
-
 
 // Delete grocery item by ID
 groceryRouter.delete('/delete/:id', async (req, res) => {

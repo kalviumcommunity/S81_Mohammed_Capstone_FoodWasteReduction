@@ -44,92 +44,260 @@ function Home() {
   }, []);
 
   return (
-            <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-10">
-
-      <div className="bg-white/20 flex-grow py-8 px-4 md:px-10">
+    <div className="min-h-screen bg-gray-50">
+      <div className="py-8 px-4 md:px-10 max-w-7xl mx-auto">
         {/* Welcome Banner */}
-        <div className="bg-white shadow-xl rounded-lg p-6 mb-8 border-l-4 border-black-500">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to PantryChef!</h1>
-          <p className="text-gray-700">Track your grocery items and reduce food waste with smart expiry tracking.</p>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 mb-8 fade-in">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2 text-gray-900">
+                Welcome to PantryChef
+              </h1>
+              <p className="text-gray-600">
+                Track your grocery items and reduce food waste with smart expiry tracking.
+              </p>
+            </div>
+            <div className="hidden md:block text-6xl text-gray-400">
+              🥗
+            </div>
+          </div>
         </div>
 
-        {/* Grocery Items */}
-        <h2 className="text-2xl font-semibold text-black-800 mb-4">Your Grocery Items</h2>
-
-        <div className="grid gap-6">
-          {groceries.length === 0 ? (
-            <p className="text-gray-600 bg-white/70 p-4 rounded-md shadow">No grocery added.</p>
-          ) : (
-            groceries.map((item) => (
-              <div
-                key={item._id}
-                className="bg-white/100 rounded-lg shadow-lg p-6 border border-gray-200 hover:shadow-xl transition duration-300"
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={groceryImages[item.name] || "https://via.placeholder.com/40"}
-                      alt={item.name}
-                      className="w-10 h-10 object-contain rounded"
-                    />
-                    <h3 className="text-xl font-bold text-gray-800">{item.name}</h3>
-                  </div>
-                  <span className="text-sm px-3 py-1 bg-green-100 text-green-800 rounded-full">
-                    Quantity: {item.quantity}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
-                  <div>
-                    <p>
-                      <span className="font-semibold">Purchased on:</span>{' '}
-                      {item.purchaseDate ? new Date(item.purchaseDate).toLocaleDateString() : 'N/A'}
-                    </p>
-                  </div>
-                  <div>
-                    <p>
-                      <span className="font-semibold">Expires on:</span>{' '}
-                      <span className="text-red-500 font-medium">
-                        {item.expiryDate ? new Date(item.expiryDate).toLocaleDateString() : 'N/A'}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="sm:col-span-2">
-                    <p>
-                      <span className="font-semibold">Storage Tip:</span>{' '}
-                      {item.storageTips || 'No tips available.'}
-                    </p>
-                  </div>
-                </div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 card-hover">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">Total Items</p>
+                <p className="text-2xl font-semibold text-gray-900 mt-1">{groceries.length}</p>
               </div>
-            ))
-          )}
+              <div className="text-3xl text-gray-400">📦</div>
+            </div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 card-hover">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">Expiring Soon</p>
+                <p className="text-2xl font-semibold text-gray-900 mt-1">
+                  {groceries.filter(item => {
+                    const daysUntilExpiry = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+                    return daysUntilExpiry <= 3 && daysUntilExpiry > 0;
+                  }).length}
+                </p>
+              </div>
+              <div className="text-3xl text-gray-400">⚠️</div>
+            </div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 card-hover">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">Fresh Items</p>
+                <p className="text-2xl font-semibold text-gray-900 mt-1">
+                  {groceries.filter(item => {
+                    const daysUntilExpiry = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+                    return daysUntilExpiry > 3;
+                  }).length}
+                </p>
+              </div>
+              <div className="text-3xl text-gray-400">✓</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Expiry Alerts Section */}
+        {groceries.filter(item => {
+          const daysUntilExpiry = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+          return daysUntilExpiry <= 3;
+        }).length > 0 && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-8 fade-in">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-2xl">🔔</span>
+              <h3 className="text-lg font-bold text-red-800">Expiry Alerts</h3>
+            </div>
+            <div className="grid gap-3">
+              {groceries
+                .filter(item => {
+                  const daysUntilExpiry = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+                  return daysUntilExpiry <= 3;
+                })
+                .sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate))
+                .map((item, index) => {
+                  const daysUntilExpiry = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+                  const isExpired = daysUntilExpiry <= 0;
+                  const isToday = daysUntilExpiry === 0;
+                  
+                  return (
+                    <div
+                      key={item._id}
+                      className={`flex items-center justify-between p-3 rounded ${
+                        isExpired ? 'bg-red-100 border border-red-300' : 
+                        isToday ? 'bg-red-100 border border-red-300' :
+                        'bg-orange-100 border border-orange-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xl">
+                          {isExpired ? '⛔' : isToday ? '🚨' : '⚠️'}
+                        </span>
+                        <div>
+                          <p className={`font-semibold ${isExpired || isToday ? 'text-red-800' : 'text-orange-800'}`}>
+                            {item.name}
+                          </p>
+                          <p className={`text-sm ${isExpired || isToday ? 'text-red-600' : 'text-orange-600'}`}>
+                            {isExpired 
+                              ? `Expired ${Math.abs(daysUntilExpiry)} day(s) ago!` 
+                              : isToday 
+                              ? 'Expires TODAY!' 
+                              : `Expires in ${daysUntilExpiry} day(s)`}
+                          </p>
+                        </div>
+                      </div>
+                      <span className={`text-xs font-medium px-2 py-1 rounded ${
+                        isExpired || isToday ? 'bg-red-200 text-red-800' : 'bg-orange-200 text-orange-800'
+                      }`}>
+                        Qty: {item.quantity}
+                      </span>
+                    </div>
+                  );
+                })}
+            </div>
+            <p className="text-sm text-red-600 mt-4 text-center">
+              💡 Use these items first to avoid food waste!
+            </p>
+          </div>
+        )}
+
+        {/* Grocery Items */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-3">
+            Your Grocery Items
+          </h2>
+
+          <div className="grid gap-4">
+            {groceries.length === 0 ? (
+              <div className="bg-white border border-gray-200 rounded-lg p-12 text-center shadow-sm">
+                <div className="text-5xl mb-4 text-gray-300">🛍️</div>
+                <p className="text-lg text-gray-700 font-medium">No groceries added yet</p>
+                <p className="text-gray-500 mt-2 text-sm">Start adding items to track their freshness</p>
+              </div>
+            ) : (
+              groceries.map((item, index) => {
+                const daysUntilExpiry = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+                const isExpiringSoon = daysUntilExpiry <= 3 && daysUntilExpiry > 0;
+                const isExpired = daysUntilExpiry <= 0;
+                
+                return (
+                  <div
+                    key={item._id}
+                    className={`bg-white border rounded-lg shadow-sm p-6 card-hover border-l-4 fade-in ${
+                      isExpired ? 'border-l-red-600' : isExpiringSoon ? 'border-l-orange-500' : 'border-l-gray-400'
+                    }`}
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="relative">
+                          <img
+                            src={groceryImages[item.name] || "https://via.placeholder.com/60"}
+                            alt={item.name}
+                            className="w-14 h-14 object-cover rounded border border-gray-200"
+                          />
+                          {isExpiringSoon && (
+                            <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                              !
+                            </span>
+                          )}
+                          {isExpired && (
+                            <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                              ✕
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.name}</h3>
+                          <div className="flex flex-wrap gap-2 items-center">
+                            <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 border border-gray-200 rounded text-xs font-medium">
+                              Qty: {item.quantity}
+                            </span>
+                            {isExpiringSoon && (
+                              <span className="inline-flex items-center px-2 py-1 bg-orange-50 text-orange-700 border border-orange-200 rounded text-xs font-medium">
+                                Expiring Soon
+                              </span>
+                            )}
+                            {isExpired && (
+                              <span className="inline-flex items-center px-2 py-1 bg-red-50 text-red-700 border border-red-200 rounded text-xs font-medium">
+                                Expired
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm md:max-w-md">
+                        <div className="bg-gray-50 border border-gray-200 rounded p-2">
+                          <p className="text-gray-600 text-xs font-medium mb-1">
+                            Purchased
+                          </p>
+                          <p className="text-gray-900 font-medium">
+                            {item.purchaseDate ? new Date(item.purchaseDate).toLocaleDateString() : 'N/A'}
+                          </p>
+                        </div>
+                        <div className={`border rounded p-2 ${isExpired ? 'bg-red-50 border-red-200' : isExpiringSoon ? 'bg-orange-50 border-orange-200' : 'bg-gray-50 border-gray-200'}`}>
+                          <p className={`text-xs font-medium mb-1 ${isExpired ? 'text-red-700' : isExpiringSoon ? 'text-orange-700' : 'text-gray-600'}`}>
+                            Expires
+                          </p>
+                          <p className="text-gray-900 font-medium">
+                            {item.expiryDate ? new Date(item.expiryDate).toLocaleDateString() : 'N/A'}
+                          </p>
+                          {daysUntilExpiry > 0 && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              {daysUntilExpiry} {daysUntilExpiry === 1 ? 'day' : 'days'} left
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {item.storageTips && (
+                      <div className="mt-3 bg-gray-50 border border-gray-200 rounded p-3">
+                        <p className="text-gray-700 text-xs font-medium mb-1">
+                          Storage Tip:
+                        </p>
+                        <p className="text-gray-600 text-sm">
+                          {item.storageTips}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="bg-white text-black text-center py-4">
-  <p className="mb-2">Made by Mohammed Shammas</p>
-  <div className="flex justify-center gap-6 text-blue-600">
-    <a
-      href="https://www.linkedin.com/in/mohammed-shammas-uddin-61ba57353/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="hover:underline hover:text-blue-800"
-    >
-      LinkedIn
-    </a>
-    <a
-      href="https://www.instagram.com/itz__shammas/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="hover:underline hover:text-pink-600"
-    >
-      Instagram
-    </a>
-  </div>
-</footer>
-
+      <footer className="bg-white border-t border-gray-200 text-center py-6 mt-12">
+        <p className="text-gray-600 text-sm mb-3">Made by Mohammed Shammas</p>
+        <div className="flex justify-center gap-6">
+          <a
+            href="https://www.linkedin.com/in/mohammed-shammas-uddin-61ba57353/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors"
+          >
+            LinkedIn
+          </a>
+          <a
+            href="https://www.instagram.com/itz__shammas/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors"
+          >
+            Instagram
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }
