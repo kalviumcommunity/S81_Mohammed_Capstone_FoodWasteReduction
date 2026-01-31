@@ -11,9 +11,11 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "bcryptjs": "^3.0.2",
+    "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
