@@ -4,8 +4,21 @@
             const bcrypt = require("bcrypt");
             const jwt = require("jsonwebtoken");
             const catchAsyncError = require("../middleware/catchAsyncError");
+            const upload = require("../middleware/multer");
             const userRouter = express.Router();
             require("dotenv").config();
+
+            const requireAuth = (req, res, next) => {
+              const token = req.cookies?.accesstoken;
+              if (!token) return res.status(401).json({ message: "Unauthorized" });
+              try {
+                const decoded = jwt.verify(token, process.env.SECRET);
+                req.userId = decoded.id;
+                return next();
+              } catch (error) {
+                return res.status(401).json({ message: "Unauthorized" });
+              }
+            };
 
             // userRouter.get("/signup", (req, res) => {
             //   res.status(200).send("Signup Page");
@@ -63,6 +76,35 @@
                 res.status(200).json({ success: true, message: "Login successful" });
               })
             );
+
+            userRouter.get("/checklogin", requireAuth, async (req, res) => {
+              try {
+                const user = await UserModel.findById(req.userId).select("-password");
+                if (!user) return res.status(404).json({ message: "User not found" });
+                res.json({ message: user });
+              } catch (err) {
+                res.status(500).json({ message: "Error fetching user", error: err.message });
+              }
+            });
+
+            userRouter.post("/upload", requireAuth, upload.single("photo"), async (req, res) => {
+              try {
+                if (!req.file) {
+                  return res.status(400).json({ message: "No file uploaded" });
+                }
+
+                const user = await UserModel.findByIdAndUpdate(
+                  req.userId,
+                  { profilePhoto: req.file.filename },
+                  { new: true }
+                ).select("-password");
+
+                return res.status(200).json({ message: { profilePhoto: user.profilePhoto } });
+              } catch (err) {
+                res.status(500).json({ message: "Upload failed", error: err.message });
+              }
+            });
+
 // zwrexdtcfhvjbknlmnjkbhjvgcfxtdzr
           
 
