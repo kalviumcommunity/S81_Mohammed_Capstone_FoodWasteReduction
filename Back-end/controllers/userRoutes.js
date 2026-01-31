@@ -1,7 +1,7 @@
           const express = require("express");
             const { UserModel } = require("../model/userModel");
             const Errorhandler = require("../utils/errorhadler");
-            const bcrypt = require("bcrypt");
+            const bcrypt = require("bcryptjs");
             const jwt = require("jsonwebtoken");
             const mongoose = require("mongoose");
             const catchAsyncError = require("../middleware/catchAsyncError");
