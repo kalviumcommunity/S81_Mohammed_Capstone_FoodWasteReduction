@@ -8,7 +8,12 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 app.use(cors({
-  origin: ["http://localhost:5173", "s81-mohammed-capstone-food-waste-re-eight.vercel.app"],
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "s81-mohammed-capstone-food-waste-re-eight.vercel.app",
+    "https://s81-mohammed-capstone-food-waste-re-eight.vercel.app"
+  ],
   credentials: true
 }));
 
@@ -16,6 +21,11 @@ app.use(cors({
 const userRouter = require('./controllers/userRoutes');
 const groceryRouter = require("./controllers/groceryRoutes");
 const profileRouter = require("./controllers/profileRoutes");
+
+// Root route for health check
+app.get("/", (req, res) => {
+  res.send("PantryChef API is running successfully");
+});
 
 app.get("/test", async (req, res) => {
   res.send("hello.....");
