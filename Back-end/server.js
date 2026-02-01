@@ -27,7 +27,7 @@
 
 const { app } = require("./app");
 require("dotenv").config();
-const connection = require("./db/connections");
+const connectDB = require("./db/connections");
 
 // const userRouter = require('./controllers/userRoutes');
 
@@ -36,10 +36,9 @@ const port = process.env.PORT || 2806;
 
 app.listen(port, async () => {
   try {
-    await connection;
-    // console.log(` Connected to MongoDB`);
+    await connectDB();
     console.log(`Server is running at http://localhost:${port}`);
   } catch (error) {
-    console.error(" Failed to connect to MongoDB:", error);
+    console.error("Failed to connect to MongoDB:", error);
   }
 });
