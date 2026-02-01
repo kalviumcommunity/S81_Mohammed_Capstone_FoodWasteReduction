@@ -38,9 +38,9 @@
                       withCredentials: true   
                     });
                     
+                    
                     console.log(response, "888");
                     navigate("/home");
-                    window.location.reload();
                   } catch (error) {
                     console.log(error);
                     setError(error.response?.data?.message || "Login failed. Please try again.");
