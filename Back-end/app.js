@@ -12,8 +12,6 @@ app.use(cors({
     "http://localhost:5173",
     "http://localhost:3000",
     "http://localhost:2806",
-    "s81-mohammed-capstone-food-waste-re-eight.vercel.app",
-    "https://s81-mohammed-capstone-food-waste-re-eight.vercel.app",
     "pantrychef-syste.netlify.app",
     "https://pantrychef-syste.netlify.app",
     "https://s81-mohammed-capstone-foodwastereduction5.onrender.com"

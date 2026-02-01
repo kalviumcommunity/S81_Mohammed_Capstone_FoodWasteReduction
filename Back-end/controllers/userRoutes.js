@@ -69,14 +69,15 @@
                 }
 
                 const token = jwt.sign({ id: user._id }, process.env.SECRET, { expiresIn: "30d" });
+                const isProduction = process.env.NODE_ENV === 'production';
                 res.cookie("accesstoken", token, {
                   httpOnly: true,
-                  secure: true,
-                  sameSite: "Lax",
+                  secure: isProduction,
+                  sameSite: isProduction ? "Strict" : "Lax",
                   maxAge: 30 * 24 * 60 * 60 * 1000,
                 });
 
-                res.status(200).json({ success: true, message: "Login successful", userId: user._id });
+                res.status(200).json({ success: true, message: "Login successful", userId: user._id, token: token });
               })
             );
 

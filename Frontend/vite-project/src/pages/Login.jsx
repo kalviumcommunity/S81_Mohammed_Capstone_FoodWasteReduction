@@ -2,6 +2,7 @@
               import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
               import axios from "axios";
               import { useNavigate } from "react-router-dom";
+              import Cookies from "js-cookie";
               import { API_ENDPOINTS } from "../config/api";
 
               function Login(props) {
@@ -38,6 +39,13 @@
                       withCredentials: true   
                     });
                     
+                    // Store token in cookie to ensure it's persisted
+                    if (response.data.token) {
+                      Cookies.set('accesstoken', response.data.token, {
+                        expires: 30,
+                        path: '/'
+                      });
+                    }
                     
                     console.log(response, "888");
                     navigate("/home");
