@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import { API_ENDPOINTS } from '../config/api';
 
 function ExpiryNotification() {
   const [expiringItems, setExpiringItems] = useState([]);
@@ -22,7 +23,7 @@ function ExpiryNotification() {
 
     const fetchExpiringItems = async () => {
       try {
-        const res = await fetch(`http://localhost:2806/grocery/expiring/${userId}?days=3`);
+        const res = await fetch(API_ENDPOINTS.EXPIRING_GROCERIES(userId, 3));
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
         setExpiringItems(data.items || []);

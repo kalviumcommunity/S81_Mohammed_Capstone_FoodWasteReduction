@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_ENDPOINTS } from "../config/api";
 
 export default function CreateAddress({ onAddressAdded, onClose }) {
   const [formData, setFormData] = useState({
@@ -29,7 +30,7 @@ export default function CreateAddress({ onAddressAdded, onClose }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:2806/user/add-address",
+        API_ENDPOINTS.ADD_ADDRESS,
         formData,
         { withCredentials: true }
       );

@@ -176,8 +176,9 @@ import React, { useState, useEffect } from 'react';
 import GroceryFilter from '../components/GroceryFilter';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import { API_ENDPOINTS } from '../config/api';
 
-const API_BASE = 'http://localhost:2806/grocery';
+const API_BASE = API_ENDPOINTS.GROCERY;
 
 // Mapping of grocery names to image URLs
 const groceryImages = {

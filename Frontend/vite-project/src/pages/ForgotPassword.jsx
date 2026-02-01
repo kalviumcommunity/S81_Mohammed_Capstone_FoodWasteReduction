@@ -1,6 +1,7 @@
         import React, { useState } from "react";
         import axios from "axios";
         import { useNavigate } from "react-router-dom";
+        import { API_ENDPOINTS } from "../config/api";
 
         const ForgotPassword = () => {
           const navigate = useNavigate();
@@ -18,7 +19,7 @@
               return;
             }
             try {
-            await axios.put("http://localhost:2806/user/forgot-password", {
+            await axios.put(API_ENDPOINTS.FORGOT_PASSWORD, {
           email,
           newPassword,
         });

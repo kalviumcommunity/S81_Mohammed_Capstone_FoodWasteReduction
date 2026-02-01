@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import { API_ENDPOINTS } from '../config/api';
 
 function GroceryFilter({ onSelect, selectedItem }) {
   const [items, setItems] = useState([]);
@@ -54,7 +55,7 @@ function GroceryFilter({ onSelect, selectedItem }) {
 
     const fetchItems = async () => {
       try {
-        const res = await fetch(`http://localhost:2806/grocery/user/${userId}`);
+        const res = await fetch(API_ENDPOINTS.GET_GROCERIES(userId));
         if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();
         const namesFromDB = data.map((item) => item.name);

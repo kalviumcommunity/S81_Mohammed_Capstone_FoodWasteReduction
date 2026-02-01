@@ -2,6 +2,7 @@
               import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
               import axios from "axios";
               import { useNavigate } from "react-router-dom";
+              import { API_ENDPOINTS } from "../config/api";
 
               function Login(props) {
                 const navigate = useNavigate();
@@ -30,7 +31,7 @@
                   }
 
                   try {
-                    const response = await axios.post("http://localhost:2806/user/login", {
+                    const response = await axios.post(API_ENDPOINTS.LOGIN, {
                       email,
                       password,
                     }, {

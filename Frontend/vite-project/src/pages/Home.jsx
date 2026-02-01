@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
         import Cookies from 'js-cookie';
         import { jwtDecode } from 'jwt-decode';
+        import { API_ENDPOINTS } from '../config/api';
 // Grocery image map
 const groceryImages = {
   "Tomato": "https://media.post.rvohealth.io/wp-content/uploads/2020/09/AN313-Tomatoes-732x549-Thumb-732x549.jpg",
@@ -32,7 +33,7 @@ function Home() {
         const decoded = jwtDecode(token);
         const userId = decoded.id;
 
-        const res = await fetch(`http://localhost:2806/grocery/user/${userId}`);
+        const res = await fetch(API_ENDPOINTS.GET_GROCERIES(userId));
         const data = await res.json();
         setGroceries(data?.groceries || data);
       } catch (err) {
