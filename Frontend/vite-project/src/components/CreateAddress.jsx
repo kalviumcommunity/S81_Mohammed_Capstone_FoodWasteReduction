@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { API_ENDPOINTS } from "../config/api";
+import Cookies from "js-cookie";
 
 export default function CreateAddress({ onAddressAdded, onClose }) {
   const [formData, setFormData] = useState({
@@ -49,9 +50,15 @@ export default function CreateAddress({ onAddressAdded, onClose }) {
         onClose();
       }
     } catch (err) {
-      const errorMsg = err.response?.data?.message || err.message || "Failed to add address";
-      setError(errorMsg);
       console.error("Error adding address:", err);
+      
+      if (err.response?.status === 401) {
+        setError("Your session has expired. Please refresh the page and login again.");
+        Cookies.remove('accesstoken');
+      } else {
+        const errorMsg = err.response?.data?.message || err.message || "Failed to add address";
+        setError(errorMsg);
+      }
     } finally {
       setLoading(false);
     }

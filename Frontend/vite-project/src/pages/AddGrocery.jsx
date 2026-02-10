@@ -175,8 +175,8 @@
 import React, { useState, useEffect } from 'react';
 import GroceryFilter from '../components/GroceryFilter';
 import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
 import { API_ENDPOINTS } from '../config/api';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE = API_ENDPOINTS.GROCERY;
 
@@ -204,11 +204,51 @@ function AddGrocery() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-  const token = Cookies.get('accesstoken');
-  const user = token ? jwtDecode(token).id : null;
+  // Fetch user ID from checklogin endpoint
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchUser = async () => {
+      try {
+        // Add a small delay to ensure cookie is set
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        const res = await fetch(API_ENDPOINTS.CHECK_LOGIN, {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            if (isMounted) navigate('/login');
+          }
+          return;
+        }
+
+        const userData = await res.json();
+        if (isMounted) {
+          setUser(userData.message._id);
+        }
+      } catch (err) {
+        console.error('Failed to fetch user:', err);
+        if (isMounted) {
+          navigate('/login');
+        }
+      }
+    };
+
+    fetchUser();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [navigate]);
 
   const fetchGroceries = async () => {
+    if (!user) return;
     try {
       const res = await fetch(`${API_BASE}/user/${user}`);
       const data = await res.json();

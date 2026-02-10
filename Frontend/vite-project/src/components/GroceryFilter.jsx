@@ -156,7 +156,7 @@ function GroceryFilter({ onSelect, selectedItem }) {
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder="Search groceries..."
-          className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
+          className="w-full pl-10 pr-10 py-3 border border-blue-200 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
         />
         {searchTerm && (
           <button
@@ -185,7 +185,7 @@ function GroceryFilter({ onSelect, selectedItem }) {
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full bg-white border border-blue-200 rounded shadow-lg max-h-60 overflow-y-auto">
           {filteredItems.length === 0 ? (
             <div className="px-4 py-3 text-gray-500 text-sm text-center">
               No items found
@@ -197,12 +197,12 @@ function GroceryFilter({ onSelect, selectedItem }) {
                 onClick={() => handleSelect(item)}
                 className={`px-4 py-3 cursor-pointer text-sm transition-colors ${
                   highlightedIndex === index 
-                    ? 'bg-gray-100 text-gray-900' 
-                    : 'text-gray-700 hover:bg-gray-50'
-                } ${selectedItem === item ? 'bg-gray-50 font-medium' : ''}`}
+                    ? 'bg-blue-100 text-blue-900' 
+                    : 'text-gray-700 hover:bg-blue-50'
+                } ${selectedItem === item ? 'bg-blue-50 font-medium text-blue-600' : ''}`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-400">
+                  <span className="text-blue-400">
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>

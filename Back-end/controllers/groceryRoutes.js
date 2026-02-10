@@ -2,6 +2,7 @@ const express = require('express');
 const groceryRouter = express.Router();
 const GroceryModel = require('../model/groceryModel');
 const { estimateExpiry, getStorageTip, getExpiryStatus } = require('../utils/expiryHelper');
+const { createExpiryNotification } = require('./notificationRoutes');
 
 // Add a grocery item
 groceryRouter.post('/add', async (req, res) => {
@@ -21,6 +22,15 @@ groceryRouter.post('/add', async (req, res) => {
     });
 
     await item.save();
+    
+    // Create notification for expiring items
+    if (estimatedExpiry) {
+      const daysUntilExpiry = Math.ceil((estimatedExpiry - new Date()) / (1000 * 60 * 60 * 24));
+      if (daysUntilExpiry <= 3) {
+        await createExpiryNotification(user, item._id, estimatedExpiry);
+      }
+    }
+    
     res.status(201).json(item);
   } catch (err) {
     res.status(500).json({ message: 'Error adding item', error: err.message });

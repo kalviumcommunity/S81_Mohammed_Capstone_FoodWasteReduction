@@ -244,59 +244,84 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import ExpiryNotification from './ExpiryNotification';
+import NotificationCenter from './NotificationCenter';
+import { API_ENDPOINTS } from '../config/api';
 
 function Navbar() {
   const navigate = useNavigate();
-  const [token, setToken] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    setToken(Cookies.get('accesstoken'));
-  }, [Cookies.get('accesstoken')]);
+    // Check authentication status by calling checklogin
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.CHECK_LOGIN, {
+          method: 'GET',
+          credentials: 'include'
+        });
+        setIsAuthenticated(res.ok);
+      } catch (err) {
+        setIsAuthenticated(false);
+      }
+    };
 
-  const handleLogout = () => {
-    Cookies.remove('accesstoken');
-    setToken(null);
-    navigate('/login');
-    setMobileMenuOpen(false);
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      // Call logout endpoint to clear the httpOnly cookie
+      const response = await fetch(API_ENDPOINTS.LOGOUT, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      
+      console.log('Logout response:', response);
+      
+      // Wait a bit for cookie to be cleared
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      setIsAuthenticated(false);
+      navigate('/login', { replace: true });
+      setMobileMenuOpen(false);
+    } catch (err) {
+      console.error('Logout error:', err);
+      // Still redirect to login even if logout call fails
+      setIsAuthenticated(false);
+      navigate('/login', { replace: true });
+    }
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-white shadow-sm border-b border-blue-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/home" className="flex items-center">
-            <h1 className="text-xl font-bold text-gray-900">PantryChef</h1>
+            <h1 className="text-2xl font-bold text-blue-600">PantryChef</h1>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
-            {token ? (
+            {isAuthenticated ? (
               <>
                 <Link 
                   to="/home" 
-                  className="px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors text-sm"
+                  className="px-4 py-2 rounded text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-colors text-sm"
                 >
                   Home
                 </Link>
                 <Link 
                   to="/add-grocery" 
-                  className="px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors text-sm"
+                  className="px-4 py-2 rounded text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-colors text-sm"
                 >
                   Add Grocery
                 </Link>
-                <Link 
-                  to="/profile" 
-                  className="px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors text-sm"
-                >
-                  Profile
-                </Link>
                 <ExpiryNotification />
+                <NotificationCenter />
                 <button
                   onClick={handleLogout}
-                  className="ml-2 bg-gray-900 text-white px-4 py-2 rounded font-medium hover:bg-gray-800 transition-colors text-sm"
+                  className="ml-2 bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 transition-colors text-sm"
                 >
                   Logout
                 </button>
@@ -305,13 +330,13 @@ function Navbar() {
               <>
                 <Link 
                   to="/login" 
-                  className="bg-gray-900 text-white px-4 py-2 rounded font-medium hover:bg-gray-800 transition-colors text-sm"
+                  className="bg-blue-600 text-white px-4 py-2 rounded font-medium hover:bg-blue-700 transition-colors text-sm"
                 >
                   Login
                 </Link>
                 <Link 
                   to="/signup" 
-                  className="ml-2 bg-white text-gray-900 border border-gray-300 px-4 py-2 rounded font-medium hover:bg-gray-50 transition-colors text-sm"
+                  className="ml-2 bg-white text-blue-600 border border-blue-600 px-4 py-2 rounded font-medium hover:bg-blue-50 transition-colors text-sm"
                 >
                   Signup
                 </Link>
@@ -323,7 +348,7 @@ function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded text-gray-700 hover:bg-gray-100 focus:outline-none transition-colors"
+              className="p-2 rounded text-gray-700 hover:bg-blue-50 focus:outline-none transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -340,32 +365,26 @@ function Navbar() {
         {mobileMenuOpen && (
           <div className="md:hidden pb-4 fade-in">
             <div className="space-y-1">
-              {token ? (
+              {isAuthenticated ? (
                 <>
                   <Link
                     to="/home"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors"
+                    className="block px-4 py-2 rounded text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-colors"
                   >
                     Home
                   </Link>
                   <Link
                     to="/add-grocery"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors"
+                    className="block px-4 py-2 rounded text-gray-700 hover:text-blue-600 hover:bg-blue-50 font-medium transition-colors"
                   >
                     Add Grocery
                   </Link>
-                  <Link
-                    to="/profile"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2 rounded text-gray-700 hover:bg-gray-100 font-medium transition-colors"
-                  >
-                    Profile
-                  </Link>
+
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 rounded bg-gray-900 text-white font-medium hover:bg-gray-800 transition-colors mt-2"
+                    className="w-full text-left px-4 py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors mt-2"
                   >
                     Logout
                   </button>
@@ -375,14 +394,14 @@ function Navbar() {
                   <Link
                     to="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2 rounded bg-gray-900 text-white font-medium text-center hover:bg-gray-800 transition-colors"
+                    className="block px-4 py-2 rounded bg-blue-600 text-white font-medium text-center hover:bg-blue-700 transition-colors"
                   >
                     Login
                   </Link>
                   <Link
                     to="/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2 rounded bg-white text-gray-900 border border-gray-300 font-medium text-center hover:bg-gray-50 transition-colors"
+                    className="block px-4 py-2 rounded bg-white text-blue-600 border border-blue-600 font-medium text-center hover:bg-blue-50 transition-colors"
                   >
                     Signup
                   </Link>

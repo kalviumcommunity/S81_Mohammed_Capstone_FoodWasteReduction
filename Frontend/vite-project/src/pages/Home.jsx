@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-        import Cookies from 'js-cookie';
-        import { jwtDecode } from 'jwt-decode';
         import { API_ENDPOINTS } from '../config/api';
+        import { useNavigate } from 'react-router-dom';
 // Grocery image map
 const groceryImages = {
   "Tomato": "https://media.post.rvohealth.io/wp-content/uploads/2020/09/AN313-Tomatoes-732x549-Thumb-732x549.jpg",
@@ -23,42 +22,95 @@ const groceryImages = {
 
 function Home() {
   const [groceries, setGroceries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
+  const navigate = useNavigate();
 
+  // First, get the user ID
   useEffect(() => {
-    const fetchData = async () => {
+    let isMounted = true;
+    const fetchUser = async () => {
       try {
-        const token = Cookies.get('accesstoken');
-        if (!token) return;
+        const userRes = await fetch(API_ENDPOINTS.CHECK_LOGIN, {
+          method: 'GET',
+          credentials: 'include'
+        });
 
-        const decoded = jwtDecode(token);
-        const userId = decoded.id;
+        if (!userRes.ok) {
+          console.error('Auth failed:', userRes.status);
+          if (isMounted) {
+            navigate('/login', { replace: true });
+          }
+          return;
+        }
 
-        const res = await fetch(API_ENDPOINTS.GET_GROCERIES(userId));
-        const data = await res.json();
-        setGroceries(data?.groceries || data);
+        const userData = await userRes.json();
+        if (isMounted) {
+          setUserId(userData.message._id);
+        }
       } catch (err) {
-        console.error('Failed to fetch groceries:', err);
+        console.error('Failed to fetch user:', err);
+        if (isMounted) {
+          navigate('/login', { replace: true });
+        }
       }
     };
 
-    fetchData();
-  }, []);
+    fetchUser();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [navigate]);
+
+  // Then fetch groceries once we have the userId
+  useEffect(() => {
+    if (!userId) return;
+
+    let isMounted = true;
+    const fetchGroceries = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.GET_GROCERIES(userId));
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        if (isMounted) {
+          setGroceries(data?.groceries || data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch groceries:', err);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchGroceries();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userId]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100">
       <div className="py-8 px-4 md:px-10 max-w-7xl mx-auto">
         {/* Welcome Banner */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 mb-8 fade-in">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-8 fade-in">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold mb-2 text-gray-900">
+              <h1 className="text-4xl font-bold mb-2 text-gray-900">
                 Welcome to PantryChef
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-lg">
                 Track your grocery items and reduce food waste with smart expiry tracking.
               </p>
             </div>
-            <div className="hidden md:block text-6xl text-gray-400">
+            <div className="hidden md:block text-6xl text-gray-300">
               🥗
             </div>
           </div>
@@ -66,41 +118,41 @@ function Home() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 card-hover">
+          <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 card-hover">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">Total Items</p>
-                <p className="text-2xl font-semibold text-gray-900 mt-1">{groceries.length}</p>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Total Items</p>
+                <p className="text-3xl font-bold text-gray-900 mt-3">{groceries.length}</p>
               </div>
-              <div className="text-3xl text-gray-400">📦</div>
+              <div className="text-4xl text-gray-300">📦</div>
             </div>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 card-hover">
+          <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 card-hover">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">Expiring Soon</p>
-                <p className="text-2xl font-semibold text-gray-900 mt-1">
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Expiring Soon</p>
+                <p className="text-3xl font-bold text-gray-900 mt-3">
                   {groceries.filter(item => {
                     const daysUntilExpiry = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
                     return daysUntilExpiry <= 3 && daysUntilExpiry > 0;
                   }).length}
                 </p>
               </div>
-              <div className="text-3xl text-gray-400">⚠️</div>
+              <div className="text-4xl text-gray-300">⚠️</div>
             </div>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 card-hover">
+          <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 card-hover">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">Fresh Items</p>
-                <p className="text-2xl font-semibold text-gray-900 mt-1">
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Fresh Items</p>
+                <p className="text-3xl font-bold text-gray-900 mt-3">
                   {groceries.filter(item => {
                     const daysUntilExpiry = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
                     return daysUntilExpiry > 3;
                   }).length}
                 </p>
               </div>
-              <div className="text-3xl text-gray-400">✓</div>
+              <div className="text-4xl text-gray-300">✓</div>
             </div>
           </div>
         </div>
@@ -110,10 +162,10 @@ function Home() {
           const daysUntilExpiry = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
           return daysUntilExpiry <= 3;
         }).length > 0 && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-8 fade-in">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-8 fade-in">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl">🔔</span>
-              <h3 className="text-lg font-bold text-red-800">Expiry Alerts</h3>
+              <h3 className="text-lg font-bold text-gray-900">Action Required</h3>
             </div>
             <div className="grid gap-3">
               {groceries
@@ -130,10 +182,10 @@ function Home() {
                   return (
                     <div
                       key={item._id}
-                      className={`flex items-center justify-between p-3 rounded ${
-                        isExpired ? 'bg-red-100 border border-red-300' : 
-                        isToday ? 'bg-red-100 border border-red-300' :
-                        'bg-orange-100 border border-orange-300'
+                      className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
+                        isExpired ? 'bg-red-100 border-red-300' : 
+                        isToday ? 'bg-red-100 border-red-300' :
+                        'bg-orange-50 border-orange-200'
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -141,10 +193,10 @@ function Home() {
                           {isExpired ? '⛔' : isToday ? '🚨' : '⚠️'}
                         </span>
                         <div>
-                          <p className={`font-semibold ${isExpired || isToday ? 'text-red-800' : 'text-orange-800'}`}>
+                          <p className={`font-semibold text-gray-900`}>
                             {item.name}
                           </p>
-                          <p className={`text-sm ${isExpired || isToday ? 'text-red-600' : 'text-orange-600'}`}>
+                          <p className={`text-sm ${isExpired || isToday ? 'text-red-700' : 'text-orange-700'}`}>
                             {isExpired 
                               ? `Expired ${Math.abs(daysUntilExpiry)} day(s) ago!` 
                               : isToday 
@@ -153,7 +205,7 @@ function Home() {
                           </p>
                         </div>
                       </div>
-                      <span className={`text-xs font-medium px-2 py-1 rounded ${
+                      <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
                         isExpired || isToday ? 'bg-red-200 text-red-800' : 'bg-orange-200 text-orange-800'
                       }`}>
                         Qty: {item.quantity}
@@ -162,7 +214,7 @@ function Home() {
                   );
                 })}
             </div>
-            <p className="text-sm text-red-600 mt-4 text-center">
+            <p className="text-sm text-gray-700 mt-4 text-center font-medium">
               💡 Use these items first to avoid food waste!
             </p>
           </div>
@@ -176,9 +228,9 @@ function Home() {
 
           <div className="grid gap-4">
             {groceries.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-lg p-12 text-center shadow-sm">
-                <div className="text-5xl mb-4 text-gray-300">🛍️</div>
-                <p className="text-lg text-gray-700 font-medium">No groceries added yet</p>
+              <div className="bg-white border border-gray-100 rounded-xl p-16 text-center shadow-sm">
+                <div className="text-6xl mb-4 text-gray-300">🛍️</div>
+                <p className="text-lg text-gray-700 font-semibold">No groceries added yet</p>
                 <p className="text-gray-500 mt-2 text-sm">Start adding items to track their freshness</p>
               </div>
             ) : (
@@ -190,8 +242,8 @@ function Home() {
                 return (
                   <div
                     key={item._id}
-                    className={`bg-white border rounded-lg shadow-sm p-6 card-hover border-l-4 fade-in ${
-                      isExpired ? 'border-l-red-600' : isExpiringSoon ? 'border-l-orange-500' : 'border-l-gray-400'
+                    className={`bg-white border-l-4 rounded-xl shadow-sm p-6 card-hover fade-in transition-all ${
+                      isExpired ? 'border-l-red-600 border border-red-100' : isExpiringSoon ? 'border-l-orange-500 border border-orange-100' : 'border-l-gray-400 border border-gray-100'
                     }`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
